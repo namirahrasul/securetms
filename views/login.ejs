@@ -1,0 +1,54 @@
+<%-include('partials/header',{title:'Log In',stylesheet:'/css/styles.css'});-%>
+<form class="form-padded" id="login-form">
+ <h2>Log in</h2>
+ <div class="form-group">
+  <label for="email">Email:</label>
+  <input type="email" class="form-control" id="email" name="email" placeholder="johndoe@example.com" required>
+ </div>
+ <div class="email error"></div>
+ <div class="form-group">
+  <label for="password">Password:</label>
+  <input type="password" class="form-control" id="password" name="password" required>
+ </div>
+ <div class="password error"></div>
+ <button type="submit">Log in</button>
+</form>
+
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  const emailError = document.querySelector('.email.error');
+  const passwordError = document.querySelector('.password.error');
+
+  form.addEventListener('submit', async (e) => {
+   e.preventDefault();
+   emailError.innerHTML = '   ';
+   passwordError.innerHTML = '    ';
+
+   const email = form.email.value;
+   const password = form.password.value;
+   try {
+    const res = await fetch('/login', {
+     method: 'POST',
+     headers: {
+      'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({ email, password })
+    })
+    const data = await res.json();
+    console.log(data);
+    if (data) {
+     emailError.innerHTML = data.email;
+     passwordError.innerHTML = data.password;
+    }
+    if (data.user) {
+     location.assign('/');
+    }
+   } catch (err) {
+    console.log(err);
+   }
+  });
+ });
+
+</script>
+ <%-include('partials/footer');-%>

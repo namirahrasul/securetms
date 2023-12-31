@@ -1,0 +1,232 @@
+<%-include('partials/header',{title: 'Browse Tasks',stylesheet:'/css/styles.css' });-%>
+
+
+    <div id="app">
+
+        <div class="search-container " id="search-div">
+            <form id="search-form" method="post" action="/search">
+                <input type="text" id="search-input" name="search" placeholder="Search for campaigns...">
+                <button id="search-button" type="submit">Search</button>
+                <button id="clear-button" type="reset">Clear</button>
+
+            </form>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary  dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/sort/priority/lowest">Lowest Priority</a></li>
+                <li><a class="dropdown-item" href="/sort/priority/highest">Highest Priority</a></li>
+                <li><a class="dropdown-item" href="/sort/due/earliest">Due Earliest</a></li>
+                <li><a class="dropdown-item" href="/sort/due/latest">Due Latest</a></li>
+            </ul>
+        </div>
+
+
+
+
+
+
+        <section class="filter-section left">
+                <form id="filter-form" action="/filter" method="get" class="form-padded">
+                        <h2>Filter</h2>
+                        <input type="hidden" name="input" id="input" value="">
+                        <label class="hed3">Priority</label>
+                        <select name="priority" id="priority">
+                            <option value="" selected>All</option>
+                            <option value="1">High</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Low</option>
+                           
+                        </select>
+                        <label class="hed3">Status</label>
+                        <select name="status" id="status">
+                            <option value="" selected>All</option>
+                            <option value="incomplete">Incomplete</option>
+                            <option value="complete">Complete</option>
+                        </select>
+                        <% if(data){%>
+                        <label class="hed3">Category</label>
+                        <select name="category" id="category">
+                            <option value="" selected>All</option>
+                            <% for(let i=0; i<=categories.length-1 ; i++){%>
+                            
+                            <option value="<%=categories[i]%>"><%=categories[i]%></option>
+                            <%}%>
+                        </select>
+                        <%}%>
+                    <button  type="submit" id="filter-button"
+                        form="filter-form">Filter</button>
+
+                </form>
+            </section>
+
+
+
+
+        <div class="cards">
+
+            <% if(data.length==0) { %>
+                <p class="text-center display-3">No results found</p>
+                <% } else {%>
+
+                    <% for (let i=0; i < data.length; i ++) { %>
+
+
+
+                        <div class="task">
+                            <div class=" d-flex flex-column justify-content-between">
+
+
+                                <h5>
+                                    <b>
+                                        <%= data[i].title %>
+                                    </b>
+                                </h5>
+                                <div>
+                                    <p class="text-white-50">
+                                        <%= data[i].description %>
+                                    </p>
+                                    <p>Priority:
+                                        <% if(data[i].priority===1){%>
+                                            <span class="text-danger fw-bold">
+                                                Medium</span>
+                                            <%}else if(data[i].priority===2){%>
+                                                <span class="text-warning fw-bold">
+                                                    Medium</span>
+                                                <%}else{%>
+                                                    <span class="text-success fw-bold">
+                                                        Low</span>
+                                                    <%}%>
+                                    </p>
+                                    <p>Category: <%=data[i].category%></p>
+                                    <p>Due:<%= data[i].due_date %>
+                                    </p>
+
+                                </div>
+
+                                <div class="card-actions row justify-content-between">
+                                    <%if(data[i].status==="incomplete"){%>
+                                        <button class=" complete-button col-3" data-task-id="<%=data[i].id%>">
+                                            Complete
+                                        </button>
+                                        <a class="edit-button col-3" href="/edit/<%=data[i].id%>">Edit</a>
+                                        <%}else{%>
+                                            <button class="col-3" disabled>
+                                                Completed
+                                            </button>
+                                            <%}%>
+
+                                                <button class="col-3 delete-button"
+                                                    data-task-id="<%=data[i].id%>">Delete</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <% } %>
+
+                            <% } %>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // const searchForm = document.querySelector('#search-form');
+            // const searchInput = document.querySelector('#search-input');
+            // const clearButton = document.querySelector('#clear-button');
+            // const searchButton = document.querySelector('#search-button');
+            // searchForm.addEventListener('submit', (e) => {
+            //     e.preventDefault();
+            //     const search = searchInput.value;
+            //     console.log("client-side input search",search);
+            //     fetch('/search', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //         },
+            //         body: JSON.stringify({
+            //             search: search
+            //         })
+            //     })
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             console.log('Success:', data);
+            //             location.assign('/search');
+            //         })
+            //         .catch((error) => {
+            //             console.error('Error:', error);
+            //         });
+            // });
+            const filterForm = document.querySelector('#filter-form');
+            const filterButton = document.querySelector('#filter-button');
+            const completeButtons = document.querySelectorAll('.complete-button');
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            var taskId
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    taskId = button.getAttribute('data-task-id');
+                    console.log("taskId", taskId)
+                    fetch(`/delete/${taskId}`, {
+                        method: 'DELETE',
+                    })
+                        .then(response => {
+                            // Handle the response, e.g., close the modal if successful
+                            if (response.status === 200) {
+                                console.log('Task deleted successfully');
+                                location.reload();
+
+                            }
+                        })
+                        .catch(error => {
+                            // Handle errors, e.g., display an error message
+                            console.error('Error deleting deck:', error);
+                        });
+                });
+
+            });
+
+            completeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    taskId = button.getAttribute('data-task-id');
+                    console.log("taskId", taskId)
+                    fetch(`/complete/${taskId}`, {
+                        method: 'PUT',
+                    })
+                        .then(response => {
+                            // Handle the response, e.g., close the modal if successful
+                            if (response.status === 200) {
+                                console.log('Task completed successfully');
+                                location.reload();
+
+                            }
+                        })
+                        .catch(error => {
+                            // Handle errors, e.g., display an error message
+                            console.error('Error deleting deck:', error);
+                        });
+                });
+
+            });
+
+            function handleSortChange(select) {
+                const selectedValue = select.value;
+                if (selectedValue) {
+                    window.location.href = selectedValue;
+                }
+            }
+
+
+        });
+
+    </script>
+
+    <%-include('partials/footer');-%>

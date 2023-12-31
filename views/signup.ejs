@@ -1,0 +1,17 @@
+<%-include('partials/header',{title:'Sign Up',stylesheet:'/css/styles.css'});-%>
+<form class="form-padded" id="signup-form" action="/signup" method="POST">
+<h2>Sign up</h2>
+<div class="form-group">
+<label for="email">Email:</label>
+<input type="email" class="form-control" id="email" name="email" placeholder="johndoe@example.com" required>
+</div>
+<div class="email error"></div>
+<div class="form-group">
+<label for="password">Password:</label>
+<input type="password" class="form-control" id="password" name="password" required>
+</div>
+<div class="password error"></div>
+<button type="submit">Sign up</button>
+</form>
+
+<%-include('partials/footer');-%>

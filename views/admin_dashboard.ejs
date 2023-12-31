@@ -1,0 +1,19 @@
+
+<%-include('partials/header',{title: 'Dashboard',stylesheet:'/css/styles.css'});-%>
+
+
+  <div id="mySidenav" class="sidenav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/users">Users</a>
+    <a href="/all">Tasks</a>
+  </div>
+  
+    <div class="form-padded dashboard-info">
+      <h2>Dashboard</h2>
+      <p>Welcome <%= user.email %>
+      </p>
+      <p>Email: <%= user.email %>
+      </p>
+      <p>Role: <b>Admin</b></p>
+    </div>
+<%-include('partials/footer');-%>

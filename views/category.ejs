@@ -1,0 +1,12 @@
+<%-include('partials/header',{title: 'Add Category',stylesheet:'/css/styles.css' });-%>
+
+ <div class="container-fluid ">
+  <form id="category-form" class="form-padded" method="post" action="/categories">
+   <h2>Add Category</h2>
+    <label for="title">New Category:</label>
+     <input type="text" name="category" id="title" placeholder="Enter category" />
+   <button type="submit">Add Category</button>
+  </form>
+ </div>
+<%-include('partials/footer');-%>
+```

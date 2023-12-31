@@ -1,0 +1,90 @@
+<%-include('partials/header',{title: 'New Task',stylesheet:'/css/styles.css'});-%>
+
+        <div class="container-fluid ">
+            
+            <form id="task-form" class=" form-padded">
+                <h2 >Create New Task</h2>
+                <div >
+                    <label for="title" >Title:</label>
+                    <div >
+                        <input  type="text" name="title" id="title" placeholder="Enter title"
+                            />
+                    </div>
+                </div>
+                <div class="title error"></div>
+                <div>
+                    <label for="description">Description:</label>
+                    <div >
+                        <textarea name="description" placeholder="Enter description"  cols="60"
+                            rows="10"></textarea>
+                    </div>
+                </div>
+                <div class="description error"></div>
+                <div>
+                    <label for="priority">Priority:</label>
+                    <div >
+                        <select name="priority" >
+                            <option value="3">Low</option>
+                            <option value="2">Medium</option>
+                            <option value="1">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div >
+                    <label for="due_date" >Due Date:</label>
+                    <div >
+                        <input type="date" name="due_date" placeholder="Enter due date"  />
+                    </div>
+                </div>
+                <div class="due_date error"></div>
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+        <script>
+           document.addEventListener('DOMContentLoaded', () => {
+                const form = document.querySelector('form');
+                const titleError = document.querySelector('.title.error');
+                const dueDateError = document.querySelector('.due_date.error');
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    titleError.innerHTML = '';
+                    dueDateError.innerHTML = '';
+
+                    const title = form.title.value;
+                    const description = form.description.value;
+                    const priority = form.priority.value;
+                    const due_date = form.due_date.value;
+
+                    try {
+                        const res = await fetch('/new', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ title, description, priority, due_date })
+                        });
+
+                        const data = await res.json();
+                        console.log(data);
+
+                        if (data.errors) {
+                            titleError.innerHTML = data.errors.title;
+                            dueDateError.innerHTML = data.errors.due_date;
+                        }
+
+                        if (data.task) {
+                            location.assign('/all');
+                        }
+                    } catch (err) {
+                        console.log(err);
+                    }
+                });
+            });
+
+        </script>
+
+
+
+
+<%-include('partials/footer');-%>
