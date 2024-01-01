@@ -22,7 +22,7 @@ app.use('/user', userRoutes);
 app.set('view engine', 'ejs');
 
 // database connection
-const dbURI = 'mongodb+srv://nrsl136:7cumQIDeM5beCsxi@namirah.cyj7pgp.mongodb.net/securetms';
+const dbURI = 'process.env.mongoURI';
 mongoose.connect(dbURI)
  .then((result) => app.listen(3020, () => console.log('listening on port 3020')))
  .catch((err) => console.log(err));
